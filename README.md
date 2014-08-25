@@ -13,10 +13,9 @@ $ wget -qO- https://raw.github.com/binocarlos/nubuntu/master/bootstrap.sh | sudo
 
 ## usage
 
-nubuntu offers 4 commands:
+nubuntu has 3 commands:
 
  * update - update the system to the latest state
- * hostname - set the hostname for the machine
  * adduser - add a sudo user with a public key
  * lockdown - prevent password and root logins
 
@@ -24,12 +23,11 @@ These are typically run in a sequence (as root):
 
 ```bash
 $ nubuntu update
-$ nubuntu hostname myhost
 $ cat ~/mykey.pub | nubuntu adduser bob
 $ nubuntu lockdown
 ```
 
-You should reboot the server after this setup.
+You should reboot the server after this setup (because apt-get safe-upgrade).
 
 The server now has hostname `myhost`, a user called bob who can sudo and uses the public key and will prevent root logins or password logins
 
@@ -38,10 +36,6 @@ The server now has hostname `myhost`, a user called bob who can sudo and uses th
 #### `nubuntu update`
 
 Update the system
-
-#### `nubuntu hostname <hostname>`
-
-Set the hostname of the machine
 
 #### `nubuntu adduser bob [keyfile]`
 
