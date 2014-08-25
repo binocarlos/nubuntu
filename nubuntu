@@ -1,0 +1,127 @@
+#!/bin/bash
+
+if [[ ! "root" = "$(whoami)" ]] ; then
+  echo -e "****\nThis script must be run as root.\n****" && exit 1
+fi
+
+function cmd-adduser() {
+  user_name=$1
+  public_key=$2
+  authorizedkeys="/home/$user_name/.ssh/authorized_keys"
+
+  echo -e "\nAdding user account: $user_name\n"
+
+  #
+  # create user account and home directory
+  #
+  useradd -m -s /bin/bash $user_name
+
+  if [ -z $public_key ]; then
+
+    # http download
+    if [[ $public_key == *http ]]; then
+
+      curl $public_key > $authorizedkeys
+    # local file
+    else
+
+      if [ -f $public_key ]; then
+        cat $public_key > $authorizedkeys
+      else
+        >&2 echo "$public_key does not exist"
+        exit 1
+      fi
+
+    fi
+
+  else
+    while read input; do
+      echo $input >> $authorizedkeys
+    done
+  fi
+
+  #
+  # set ownership and permissions on authorized_keys
+  #
+  chown -R $user_name:$user_name /home/$user_name/.ssh
+  chmod -R 0751 /home/$user_name/.ssh
+
+  #
+  # add user to sudoers list with no password required (account has no password)
+  #
+  (cat /etc/sudoers;echo "$user_name ALL=(ALL) NOPASSWD: ALL") >> ~/tmp_sudoers
+  chmod 0440 ~/tmp_sudoers
+  visudo -q -c -s -f ~/tmp_sudoers
+  if [ $? == 0 ];then
+    echo -e "\nERROR: There is a problem with the sudoers configuration.\n Please review ~/tmp_sudoers.\n" && exit 1
+  fi
+  mv -f ~/tmp_sudoers /etc/sudoers
+}
+
+function cmd-update() {
+  #
+  # Upgrade installed packages to latest
+  #
+  echo -e "\nUpdating all installed packages\n"
+  aptitude update
+  aptitude safe-upgrade -y
+
+  #
+  # set timezone to Universal Coordinated Time
+  #
+  ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+}
+
+function cmd-hostname() {
+
+  #
+  # set the hostname
+  #
+  if [ $# > 0 ];then
+    hostName=$1
+    echo -e "\nSetting host name to \"$hostName\"\n"
+    echo "$hostName" > /etc/hostname
+    (echo "127.0.0.1       $hostName   $hostName"; cat /etc/hosts) > ~/hosts
+    chmod 644 ~/hosts
+    mv -f ~/hosts /etc/hosts
+    hostname -F /etc/hostname
+  fi
+}
+
+function cmd-lockdown() {
+  #
+  # disable root login and password authentication over ssh
+  #
+  (cat /etc/ssh/sshd_config;echo "PermitRootLogin no") | sed 's/#PasswordAuthentication yes/PasswordAuthentication no/g' > ~/sshd_config
+  chmod 0644 ~/sshd_config
+  mv -f ~/sshd_config /etc/ssh/sshd_config
+  service ssh restart  
+}
+
+
+function cmd-help() {
+    cat<<EOF
+
+Usage: nubuntu COMMAND [options]
+
+Commands:
+    update                        Update the system
+    hostname                      Set the hostname
+    adduser                       Add a user
+    lockdown                      Lockdown SSH access
+
+EOF
+    echo
+    ;;
+
+main() {
+  case "$1" in
+  update)             shift; cmd-update $@;;
+  adduser)            shift; cmd-adduser $@;;
+  hostname)           shift; cmd-hostname $@;;
+  lockdown)           shift; cmd-lockdown $@;;
+  *)                  cmd-help $@;;
+  esac
+}
+
+main "$@"
