@@ -13,4 +13,5 @@ apt-get update
 cd ~ && test -d nubuntu || git clone $NUBUNTU_REPO
 cd nubuntu
 git fetch origin
+git pull
 make install
