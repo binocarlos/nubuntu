@@ -25,7 +25,7 @@ These are typically run in a sequence (as root):
 ```bash
 $ nubuntu update
 $ nubuntu hostname myhost
-$ cat ~/mykey.pub | nubuntu user bob
+$ cat ~/mykey.pub | nubuntu adduser bob
 $ nubuntu lockdown
 ```
 
