@@ -111,8 +111,7 @@ Commands:
     lockdown                      Lockdown SSH access
 
 EOF
-    echo
-    ;;
+}
 
 main() {
   case "$1" in
