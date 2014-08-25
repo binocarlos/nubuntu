@@ -29,6 +29,8 @@ $ cat ~/mykey.pub | nubuntu user bob
 $ nubuntu lockdown
 ```
 
+You should reboot the server after this setup.
+
 The server now has hostname `myhost`, a user called bob who can sudo and uses the public key and will prevent root logins or password logins
 
 ## api
