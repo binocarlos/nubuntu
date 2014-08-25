@@ -8,7 +8,7 @@ then
 fi
 
 apt-get update
-$(apt-get install -y git make curl)
+`apt-get install -y git make curl`
 
 cd ~ && test -d nubuntu || git clone $NUBUNTU_REPO
 cd nubuntu
