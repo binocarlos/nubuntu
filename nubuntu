@@ -15,7 +15,6 @@ function cmd-adduser() {
   # create user account and home directory
   #
   useradd -m -s /bin/bash $user_name
-  usermod -a -G sudo $user_name
   mkdir -p "/home/$user_name/.ssh"
   touch $authorizedkeys
 
