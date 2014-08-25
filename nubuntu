@@ -49,6 +49,8 @@ function cmd-adduser() {
   #
   chown -R $user_name:$user_name /home/$user_name/.ssh
   chmod -R 0751 /home/$user_name/.ssh
+
+  echo "$user_name ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 }
 
 function cmd-update() {
