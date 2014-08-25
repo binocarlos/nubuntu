@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-export DEBIAN_FRONTEND=noninteractive
 export NUBUNTU_REPO=${NUBUNTU_REPO:-"https://github.com/binocarlos/nubuntu.git"}
 
 if ! which apt-get &>/dev/null

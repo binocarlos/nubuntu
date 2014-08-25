@@ -9,7 +9,10 @@ Based on this [gist](https://gist.github.com/alanstevens/1877257)
 
 ```bash
 $ wget -qO- https://raw.github.com/binocarlos/nubuntu/master/bootstrap.sh | sudo bash
+$ wget -qO- https://raw.github.com/binocarlos/nubuntu/master/bootstrap.sh | sudo bash
 ```
+
+For some reason I really dont understand - the install script quits after apt-get update the first time (pull request welcome :)
 
 ## usage
 
